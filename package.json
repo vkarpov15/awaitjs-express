@@ -1,0 +1,22 @@
+{
+  "name": "@awaitjs/express",
+  "version": "0.1.0",
+  "description": "Write Express middleware and route handlers using async/await",
+  "main": "index.js",
+  "scripts": {
+    "docs": "node docs.js",
+    "test": "mocha test/*.test.js"
+  },
+  "author": "Valeri Karpov <val@karpov.io>",
+  "license": "Apache 2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vkarpov15/awaitjs-express.git"
+  },
+  "devDependencies": {
+    "acquit": "0.6.2",
+    "express": "4.x",
+    "mocha": "4.0.0",
+    "superagent": "3.x"
+  }
+}
