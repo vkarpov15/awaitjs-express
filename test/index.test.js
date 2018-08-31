@@ -1,9 +1,31 @@
 const assert = require('assert');
 const express = require('express');
 const superagent = require('superagent');
-const wrap = require('../');
+const { decorateApp, wrap } = require('../');
 
-describe('wrapMiddleware', function() {
+describe('decorateApp', function() {
+  it('works', async function() {
+    const app = decorateApp(express());
+
+    app.useAsync(async function(req, res, next) {
+      throw new Error('Oops!');
+    });
+
+    app.use(function(error, req, res, next) {
+      res.send(error.message);
+    });
+
+    const server = await app.listen(3000);
+
+    const res = await superagent.get('http://localhost:3000');
+
+    assert.equal(res.text, 'Oops!');
+
+    await server.close();
+  });
+});
+
+describe('wrap', function() {
   it('works', async function() {
     const app = express();
 

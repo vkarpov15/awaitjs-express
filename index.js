@@ -1,4 +1,65 @@
-module.exports = function wrap(fn) {
+const assert = require('assert');
+
+module.exports = {
+  decorateApp: decorateApp,
+  wrap: wrap
+};
+
+function decorateApp(app) {
+  app.useAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `useAsync()` must be a function');
+    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
+      concat([wrap(fn)]);
+    return app.use.apply(app, args);
+  };
+
+  app.getAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `getAsync()` must be a function');
+    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
+      concat([wrap(fn)]);
+    return app.get.apply(app, args);
+  };
+
+  app.postAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `postAsync()` must be a function');
+    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
+      concat([wrap(fn)]);
+    return app.post.apply(app, args);
+  };
+
+  app.putAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `putAsync()` must be a function');
+    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
+      concat([wrap(fn)]);
+    return app.put.apply(app, args);
+  };
+
+  app.headAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `headAsync()` must be a function');
+    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
+      concat([wrap(fn)]);
+    return app.head.apply(app, args);
+  };
+
+  return app;
+}
+
+/**
+ * Given a function that returns a promise, converts it into something you
+ * can safely pass into `app.use()`, `app.get()`, etc.
+ */
+
+function wrap(fn) {
   // Error handling middleware
   if (fn.length === 4) {
     return function wrappedErrorHandler(error, req, res, next) {
@@ -11,7 +72,7 @@ module.exports = function wrap(fn) {
     next = _once(next);
     fn(req, res, next).then(next, next);
   };
-};
+}
 
 function _once(fn) {
   let called = false;
