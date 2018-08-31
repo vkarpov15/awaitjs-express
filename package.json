@@ -4,7 +4,7 @@
   "description": "Write Express middleware and route handlers using async/await",
   "main": "index.js",
   "scripts": {
-    "docs": "node docs.js",
+    "docs": "acquit-markdown -r acquit-ignore -h ./HEADER.md -p ./test/readme.test.js > README.md",
     "test": "mocha test/*.test.js"
   },
   "author": "Valeri Karpov <val@karpov.io>",
@@ -14,7 +14,9 @@
     "url": "git://github.com/vkarpov15/awaitjs-express.git"
   },
   "devDependencies": {
-    "acquit": "0.6.2",
+    "acquit": "1.0.0",
+    "acquit-ignore": "0.1.0",
+    "acquit-markdown": "0.1.0",
     "express": "4.x",
     "mocha": "4.0.0",
     "superagent": "3.x"
