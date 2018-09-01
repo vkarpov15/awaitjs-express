@@ -15,6 +15,15 @@ function decorateApp(app) {
     return app.use.apply(app, args);
   };
 
+  app.deleteAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `deleteAsync()` must be a function');
+    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
+      concat([wrap(fn)]);
+    return app.delete.apply(app, args);
+  };
+
   app.getAsync = function() {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
@@ -22,6 +31,15 @@ function decorateApp(app) {
     const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
       concat([wrap(fn)]);
     return app.get.apply(app, args);
+  };
+
+  app.patchAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `patchAsync()` must be a function');
+    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
+      concat([wrap(fn)]);
+    return app.patch.apply(app, args);
   };
 
   app.postAsync = function() {
