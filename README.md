@@ -25,8 +25,8 @@ to your Express app.
 ### It adds `useAsync()`, `getAsync()`, etc. to your Express app
 
 
-The `decorateApp()` function adds `useAsync()`, `getAsync()`,
-`putAsync()`, `postAsync()`, and `headAsync()`.
+The `decorateApp()` function adds `useAsync()`, `getAsync()`, `patchAsync()`,
+`putAsync()`, `postAsync()`, `deleteAsync()` and `headAsync()`.
 
 
 ```javascript
