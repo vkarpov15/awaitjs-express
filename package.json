@@ -1,6 +1,6 @@
 {
   "name": "@awaitjs/express",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Write Express middleware and route handlers using async/await",
   "main": "index.js",
   "scripts": {
