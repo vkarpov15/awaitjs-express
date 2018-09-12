@@ -88,7 +88,10 @@ function wrap(fn) {
 
   return function wrappedMiddleware(req, res, next) {
     next = _once(next);
-    fn(req, res, next).then(next, next);
+    fn(req, res, next).then(
+      () => { res.headersSent ? null : next(); },
+      err => { res.headersSent ? null : next(err); }
+    );
   };
 }
 

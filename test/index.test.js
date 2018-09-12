@@ -51,16 +51,16 @@ describe('wrap', function() {
   it('errors in middleware', async function() {
     const app = express();
 
-    app.use(wrap(async function(req, res, next) {
+    app.use(wrap(async function middleware(req, res, next) {
       throw new Error('Oops!');
     }));
 
-    app.get('/', wrap(async function(req, res) {
+    app.get('/', wrap(async function routeHandler(req, res) {
       await new Promise(resolve => setTimeout(resolve, 10));
       res.send('Hello, World!');
     }));
 
-    app.use(function(error, req, res, next) {
+    app.use(function errorHandler(error, req, res, next) {
       res.send(error.message);
     });
 
@@ -99,6 +99,29 @@ describe('wrap', function() {
     const res = await superagent.get('http://localhost:3000');
 
     assert.equal(res.text, 'New: Oops!');
+
+    await server.close();
+  });
+
+  it('early exit', async function() {
+    const app = express();
+    let ran = false;
+
+    app.use(wrap(async function(req, res) {
+      res.send('Hello!');
+    }));
+
+    app.get('/', wrap(async function(req, res) {
+      ran = true;
+      res.send('Hello, World!');
+    }));
+
+    const server = await app.listen(3000);
+
+    const res = await superagent.get('http://localhost:3000');
+
+    assert.equal(res.text, 'Hello!');
+    assert.ok(!ran);
 
     await server.close();
   });
