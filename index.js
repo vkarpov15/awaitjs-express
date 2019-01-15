@@ -10,8 +10,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `useAsync()` must be a function');
-    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
-      concat([wrap(fn)]);
+    const args = wrapArgs(Array.prototype.slice.call(arguments, 0));
     return app.use.apply(app, args);
   };
 
@@ -19,8 +18,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `deleteAsync()` must be a function');
-    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
-      concat([wrap(fn)]);
+    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
     return app.delete.apply(app, args);
   };
 
@@ -28,8 +26,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `getAsync()` must be a function');
-    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
-      concat([wrap(fn)]);
+    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
     return app.get.apply(app, args);
   };
 
@@ -37,8 +34,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `patchAsync()` must be a function');
-    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
-      concat([wrap(fn)]);
+    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
     return app.patch.apply(app, args);
   };
 
@@ -46,8 +42,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `postAsync()` must be a function');
-    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
-      concat([wrap(fn)]);
+    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
     return app.post.apply(app, args);
   };
 
@@ -55,8 +50,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `putAsync()` must be a function');
-    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
-      concat([wrap(fn)]);
+    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
     return app.put.apply(app, args);
   };
 
@@ -64,12 +58,27 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `headAsync()` must be a function');
-    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1).
-      concat([wrap(fn)]);
+    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
     return app.head.apply(app, args);
   };
 
   return app;
+}
+
+/**
+ * Call wrap() on all args
+ */
+
+function wrapArgs(fns) {
+  const ret = [];
+  for (const fn of fns) {
+    if (typeof fn !== 'function') {
+      ret.push(fn);
+      continue;
+    }
+    ret.push(wrap(fn));
+  }
+  return ret;
 }
 
 /**

@@ -23,6 +23,30 @@ describe('decorateApp', function() {
 
     await server.close();
   });
+
+  it('handles middleware in getter', async function() {
+    const app = decorateApp(express());
+
+    const m = async function() {
+      throw new Error('Oops!');
+    };
+
+    app.getAsync('*', m, async function(req, res, next) {
+      throw new Error('Unexpected');
+    });
+
+    app.use(function(error, req, res, next) {
+      res.send(error.message);
+    });
+
+    const server = await app.listen(3000);
+
+    const res = await superagent.get('http://localhost:3000');
+
+    assert.equal(res.text, 'Oops!');
+
+    await server.close();
+  });
 });
 
 describe('wrap', function() {
