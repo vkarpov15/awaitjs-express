@@ -10,7 +10,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `useAsync()` must be a function');
-    const args = wrapArgs(Array.prototype.slice.call(arguments, 0));
+    const args = wrapArgs(arguments);
     return app.use.apply(app, args);
   };
 
@@ -18,7 +18,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `deleteAsync()` must be a function');
-    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
+    const args = wrapArgs(arguments);
     return app.delete.apply(app, args);
   };
 
@@ -26,7 +26,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `getAsync()` must be a function');
-    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
+    const args = wrapArgs(arguments);
     return app.get.apply(app, args);
   };
 
@@ -34,7 +34,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `patchAsync()` must be a function');
-    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
+    const args = wrapArgs(arguments);
     return app.patch.apply(app, args);
   };
 
@@ -42,7 +42,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `postAsync()` must be a function');
-    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
+    const args = wrapArgs(arguments);
     return app.post.apply(app, args);
   };
 
@@ -50,7 +50,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `putAsync()` must be a function');
-    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
+    const args = wrapArgs(arguments);
     return app.put.apply(app, args);
   };
 
@@ -58,7 +58,7 @@ function decorateApp(app) {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
       'Last argument to `headAsync()` must be a function');
-    const args = [arguments[0]].concat(wrapArgs(Array.prototype.slice.call(arguments, 1)));
+    const args = wrapArgs(arguments);
     return app.head.apply(app, args);
   };
 
