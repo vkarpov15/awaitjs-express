@@ -1,11 +1,13 @@
 const assert = require('assert');
 
 module.exports = {
-  decorateApp: decorateApp,
-  wrap: wrap
+  addAsync,
+  decorateApp: addAsync,
+  decorateRouter: addAsync,
+  wrap
 };
 
-function decorateApp(app) {
+function addAsync(app) {
   app.useAsync = function() {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',

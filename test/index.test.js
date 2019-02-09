@@ -1,11 +1,11 @@
 const assert = require('assert');
 const express = require('express');
 const superagent = require('superagent');
-const { decorateApp, wrap } = require('../');
+const { addAsync, wrap } = require('../');
 
-describe('decorateApp', function() {
+describe('addAsync', function() {
   it('works', async function() {
-    const app = decorateApp(express());
+    const app = addAsync(express());
 
     app.useAsync(async function(req, res, next) {
       throw new Error('Oops!');
