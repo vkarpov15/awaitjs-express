@@ -89,18 +89,25 @@ function wrapArgs(fns) {
 function wrap(fn) {
   // Error handling middleware
   if (fn.length === 4) {
-    return function wrappedErrorHandler(error, req, res, next) {
+    return async function wrappedErrorHandler(error, req, res, next) {
       next = _once(next);
-      fn(error, req, res, next).then(next, next);
+      try {
+        await fn(error, req, res, next);
+        res.headersSent ? null : next();
+      } catch(err) {
+        res.headersSent ? null : next(err);
+      }
     };
   }
 
-  return function wrappedMiddleware(req, res, next) {
+  return async function wrappedMiddleware(req, res, next) {
     next = _once(next);
-    fn(req, res, next).then(
-      () => { res.headersSent ? null : next(); },
-      err => { res.headersSent ? null : next(err); }
-    );
+    try {
+      await fn(req, res, next);
+      res.headersSent ? null : next();
+    } catch(err) {
+      res.headersSent ? null : next(err);
+    }
   };
 }
 

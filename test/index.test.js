@@ -47,6 +47,48 @@ describe('decorateApp', function() {
 
     await server.close();
   });
+
+
+  it('should work with mixed async and non-async handlers', async function() {
+    const app = decorateApp(express());
+
+    app.getAsync('/', function (req,res,next) {
+      req.helloMessage = 'Hello, World!';
+    }, async function routeHandler(req, res) {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      res.send(req.helloMessage);
+    });
+
+    const server = await app.listen(3000);
+
+    const res = await superagent.get('http://localhost:3000');
+    assert.equal(res.text, 'Hello, World!');
+
+    await server.close();
+  });
+
+  it('should work with mixed async and non-async handlers, when throwing errors', async function() {
+    const app = decorateApp(express());
+
+    app.getAsync('/', function (req,res,next) {
+      throw new Error('Oops!');
+    }, async function routeHandler(req, res) {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      res.send(req.helloMessage);
+    });
+
+    app.useAsync(async function (err,req,res,next) {
+      res.send(err.message);
+    });
+
+    const server = await app.listen(3000);
+
+    const res = await superagent.get('http://localhost:3000');
+
+    assert.equal(res.text, 'Oops!');
+
+    await server.close();
+  });
 });
 
 describe('wrap', function() {
