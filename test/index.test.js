@@ -25,7 +25,7 @@ describe('addAsync', function() {
   });
 
   it('handles middleware in getter', async function() {
-    const app = decorateApp(express());
+    const app = addAsync(express());
 
     const m = async function() {
       throw new Error('Oops!');
@@ -50,7 +50,7 @@ describe('addAsync', function() {
 
 
   it('should work with mixed async and non-async handlers', async function() {
-    const app = decorateApp(express());
+    const app = addAsync(express());
 
     app.getAsync('/', function (req,res,next) {
       req.helloMessage = 'Hello, World!';
@@ -68,7 +68,7 @@ describe('addAsync', function() {
   });
 
   it('should work with mixed async and non-async handlers, when throwing errors', async function() {
-    const app = decorateApp(express());
+    const app = addAsync(express());
 
     app.getAsync('/', function (req,res,next) {
       throw new Error('Oops!');
