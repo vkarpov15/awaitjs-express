@@ -1,3 +1,7 @@
+0.4.0 / 2019-12-29
+==================
+ * feat: add `routeAsync()` to support chaining syntax with `getAsync()`, etc #9
+
 0.3.0 / 2019-02-09
 ==================
  * feat: add `addAsync()` as an alias for `decorateApp()` and `decorateRouter()` #4 #1 [SapienTech](https://github.com/SapienTech)
