@@ -8,6 +8,10 @@ module.exports = {
 };
 
 function addAsync(app) {
+  app.routeAsync = function() {
+    return addAsync(this.route.apply(this, arguments));
+  };
+
   app.useAsync = function() {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',

@@ -191,4 +191,26 @@ describe('wrap', function() {
 
     await server.close();
   });
+
+  it('supports chaining with route() (gh-9)', async function() {
+    const app = express();
+    const router = addAsync(express.Router());
+
+    let ran = false;
+    router.routeAsync('/foo').getAsync(async function(req, res) {
+      ran = true;
+      res.send('Hello, World');
+    });
+
+    app.use(router);
+
+    const server = await app.listen(3000);
+
+    const res = await superagent.get('http://localhost:3000/foo');
+
+    assert.equal(res.text, 'Hello, World');
+    assert.ok(ran);
+
+    await server.close();
+  });
 });
