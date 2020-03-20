@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "description": "Write Express middleware and route handlers using async/await",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "docs": "acquit-markdown -r acquit-ignore -h ./HEADER.md -p ./test/readme.test.js > README.md",
     "test": "mocha test/*.test.js"
