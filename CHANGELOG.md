@@ -1,3 +1,7 @@
+0.5.0 / 2020-03-19
+==================
+ * feat: add TypeScript types #11 [brandon-leapyear](https://github.com/brandon-leapyear)
+
 0.4.0 / 2019-12-29
 ==================
  * feat: add `routeAsync()` to support chaining syntax with `getAsync()`, etc #9
