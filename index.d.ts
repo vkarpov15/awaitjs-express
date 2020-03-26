@@ -1,6 +1,6 @@
-import { Express, IRouter } from 'express'
+import { Express, Router, IRouter } from 'express'
 
-interface ExpressWithAsync extends Express {
+export interface IRouterWithAsync {
   useAsync: IRouter['use']
   deleteAsync: IRouter['delete']
   getAsync: IRouter['get']
@@ -10,4 +10,12 @@ interface ExpressWithAsync extends Express {
   headAsync: IRouter['head']
 }
 
-export const addAsync: (app: Express) => ExpressWithAsync
+export interface ExpressWithAsync extends Express, IRouterWithAsync { }
+export interface RouterWithAsync extends Router, IRouterWithAsync { }
+
+declare function addAsync(app: Express): ExpressWithAsync
+declare function addAsync(app: Router): RouterWithAsync
+export { addAsync }
+
+export const decorateRouter: (router: Router) => RouterWithAsync
+export const decorateApp: (router: Express) => ExpressWithAsync
