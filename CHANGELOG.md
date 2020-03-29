@@ -1,3 +1,7 @@
+0.5.1 / 2020-03-29
+==================
+ * fix: add `decorateRouter` and `decorateApp` to TypeScript types #15 [zone117x](https://github.com/zone117x)
+
 0.5.0 / 2020-03-19
 ==================
  * feat: add TypeScript types #11 [brandon-leapyear](https://github.com/brandon-leapyear)
