@@ -1,3 +1,7 @@
+0.6.0 / 2020-04-23
+==================
+ * feat: export `Router` function that returns a new async-friendly Router #13
+
 0.5.1 / 2020-03-29
 ==================
  * fix: add `decorateRouter` and `decorateApp` to TypeScript types #15 [zone117x](https://github.com/zone117x)
