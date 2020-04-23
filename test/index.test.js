@@ -1,7 +1,33 @@
 const assert = require('assert');
 const express = require('express');
 const superagent = require('superagent');
-const { addAsync, wrap } = require('../');
+const { addAsync, wrap, Router } = require('../');
+
+describe('Router', function() {
+  it('creates a new async-friendly router', async function() {
+    const app = express();
+
+    const router = Router();
+    router.getAsync('/foo', async function(req, res, next) {
+      throw new Error('Oops!');
+    });
+
+    app.use(router);
+    app.use(function(err, req, res, next) {
+      res.status(500).send(err.message);
+    });
+
+    const server = await app.listen(3000);
+
+    const res = await superagent.get('http://localhost:3000/foo').
+      catch(err => err);
+
+    assert.ok(res instanceof Error);
+    assert.equal(res.response.text, 'Oops!');
+
+    await server.close();
+  });
+});
 
 describe('addAsync', function() {
   it('works', async function() {

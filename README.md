@@ -25,8 +25,8 @@ to your Express app.
 ### It adds `useAsync()`, `getAsync()`, etc. to your Express app
 
 
-The `addAsync()` function adds `useAsync()`, `getAsync()`, `patchAsync()`,
-`putAsync()`, `postAsync()`, `deleteAsync()` and `headAsync()`.
+The `addAsync()` function adds `useAsync()`, `getAsync()`,
+`putAsync()`, `postAsync()`, and `headAsync()`.
 
 
 ```javascript
@@ -52,15 +52,50 @@ app.use(function(error, req, res, next) {
 const server = await app.listen(3000);
 ```
 
-## decorateApp()
-The `decorateApp()` function is an alias for addAsync. Alias avoids
-a breaking change.
+## Router()
 
 
-## decorateRouter()
-The `decorateRouter()` function is also an alias for addAsync.
-Alias is for those who prefer using decorateApp, but think
-it's confusing to use decorateApp with express.Router
+This module exports a `Router()` function that is a drop-in
+replacement for `express.Router()`, except the returned
+router has `getAsync()`, `useAsync()`, etc.
+
+
+### It exports a `Router` function that returns a new async-friendly router
+
+```javascript
+const express = require('express');
+const app = express(); // This app isn't async friendly.
+
+const router = Router(); // But this router is.
+router.getAsync('/foo', async function(req, res, next) {
+  throw new Error('Oops!');
+});
+
+app.use(router);
+app.use(function(err, req, res, next) {
+  res.send(err.message);
+});
+
+const server = await app.listen(3000);
+```
+
+## decorateApp
+
+acquit:ignore:end
+
+### It is an alias for addAsync()
+
+```javascript
+assert.equal(decorateApp, addAsync)
+```
+
+## decorateRouter
+
+### It is an alias for addAsync()
+
+```javascript
+assert.equal(decorateRouter, addAsync)
+```
 
 ## wrap()
 

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { addAsync, decorateApp, decorateRouter, wrap } = require('../');
+const { addAsync, decorateApp, decorateRouter, wrap, Router } = require('../');
 const superagent = require('superagent');
 
 describe('API', function() {
@@ -36,6 +36,37 @@ describe('API', function() {
       const server = await app.listen(3000);
       // acquit:ignore:start
       const res = await superagent.get('http://localhost:3000');
+
+      assert.equal(res.text, 'Oops!');
+
+      await server.close();
+      // acquit:ignore:end
+    });
+  });
+
+  /**
+   * This module exports a `Router()` function that is a drop-in
+   * replacement for `express.Router()`, except the returned
+   * router has `getAsync()`, `useAsync()`, etc.
+   */
+  describe('Router()', function() {
+    it('exports a `Router` function that returns a new async-friendly router', async function() {
+      const express = require('express');
+      const app = express(); // This app isn't async friendly.
+
+      const router = Router(); // But this router is.
+      router.getAsync('/foo', async function(req, res, next) {
+        throw new Error('Oops!');
+      });
+
+      app.use(router);
+      app.use(function(err, req, res, next) {
+        res.send(err.message);
+      });
+
+      const server = await app.listen(3000);
+      // acquit:ignore:start
+      const res = await superagent.get('http://localhost:3000/foo');
 
       assert.equal(res.text, 'Oops!');
 

@@ -1,9 +1,13 @@
 const assert = require('assert');
+const express = require('express');
 
 module.exports = {
   addAsync,
   decorateApp: addAsync,
   decorateRouter: addAsync,
+  Router: function asyncRouter() {
+    return addAsync(express.Router.apply(express, arguments));
+  },
   wrap
 };
 
