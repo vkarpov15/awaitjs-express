@@ -1,4 +1,4 @@
-import { Express, Router, IRouter } from 'express'
+import { Express, Router, IRouter, RouterOptions } from 'express'
 
 export interface IRouterWithAsync {
   useAsync: IRouter['use']
@@ -19,3 +19,6 @@ export { addAsync }
 
 export const decorateRouter: (router: Router) => RouterWithAsync
 export const decorateApp: (router: Express) => ExpressWithAsync
+
+declare function AsyncRouter(options?: RouterOptions): RouterWithAsync
+export { AsyncRouter as Router }
