@@ -1,3 +1,7 @@
+0.6.1 / 2020-05-31
+==================
+ * fix: add `Router` export to typescript definitions #16 [saltire](https://github.com/saltire)
+
 0.6.0 / 2020-04-23
 ==================
  * feat: export `Router` function that returns a new async-friendly Router #13
