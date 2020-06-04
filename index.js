@@ -40,6 +40,22 @@ function addAsync(app) {
     return app.get.apply(app, args);
   };
 
+  app.headAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `headAsync()` must be a function');
+    const args = wrapArgs(arguments);
+    return app.head.apply(app, args);
+  };
+
+  app.paramAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `paramAsync()` must be a function');
+    const args = wrapArgs(arguments);
+    return app.param.apply(app, args);
+  }
+
   app.patchAsync = function() {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
@@ -62,14 +78,6 @@ function addAsync(app) {
       'Last argument to `putAsync()` must be a function');
     const args = wrapArgs(arguments);
     return app.put.apply(app, args);
-  };
-
-  app.headAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `headAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.head.apply(app, args);
   };
 
   return app;

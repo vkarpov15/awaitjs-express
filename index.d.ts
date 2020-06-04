@@ -4,10 +4,11 @@ export interface IRouterWithAsync {
   useAsync: IRouter['use']
   deleteAsync: IRouter['delete']
   getAsync: IRouter['get']
+  headAsync: IRouter['head']
+  paramAsync: IRouter['param']
   patchAsync: IRouter['patch']
   postAsync: IRouter['post']
   putAsync: IRouter['put']
-  headAsync: IRouter['head']
 }
 
 export interface ExpressWithAsync extends Express, IRouterWithAsync { }
