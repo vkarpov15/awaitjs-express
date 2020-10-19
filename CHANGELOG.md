@@ -1,3 +1,7 @@
+0.6.3 / 2020-10-19
+==================
+ * fix: add missing export #18
+
 0.6.2 / 2020-10-19
 ==================
  * fix: add `wrap()` to TypeScript type definitions #18
