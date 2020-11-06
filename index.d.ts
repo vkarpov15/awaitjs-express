@@ -2,6 +2,7 @@ import { Express, Router, IRouter, RouterOptions } from 'express'
 
 export interface IRouterWithAsync {
   useAsync: IRouter['use']
+  allAsync: IRouter['all']
   deleteAsync: IRouter['delete']
   getAsync: IRouter['get']
   patchAsync: IRouter['patch']
