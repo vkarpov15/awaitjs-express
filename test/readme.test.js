@@ -10,8 +10,8 @@ describe('API', function() {
    */
   describe('addAsync()', function() {
     /**
-     * The `addAsync()` function adds `useAsync()`, `getAsync()`,
-     * `putAsync()`, `postAsync()`, and `headAsync()`.
+     * The `addAsync()` function adds `useAsync()`, `deleteAsync()`, `getAsync()`,
+     * `headAsync()`, `paramAsync()`, `patchAsync()`, `postAsync()`, and `putAsync()`.
      */
     it('adds `useAsync()`, `getAsync()`, etc. to your Express app', async function() {
       const express = require('express');

@@ -40,6 +40,22 @@ function addAsync(app) {
     return app.get.apply(app, args);
   };
 
+  app.headAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `headAsync()` must be a function');
+    const args = wrapArgs(arguments);
+    return app.head.apply(app, args);
+  };
+
+  app.paramAsync = function() {
+    const fn = arguments[arguments.length - 1];
+    assert.ok(typeof fn === 'function',
+      'Last argument to `paramAsync()` must be a function');
+    const args = wrapArgs(arguments, true);
+    return app.param.apply(app, args);
+  }
+
   app.patchAsync = function() {
     const fn = arguments[arguments.length - 1];
     assert.ok(typeof fn === 'function',
@@ -64,31 +80,57 @@ function addAsync(app) {
     return app.put.apply(app, args);
   };
 
-  app.headAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `headAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.head.apply(app, args);
-  };
-
   return app;
 }
 
 /**
- * Call wrap() on all args
+ * Call `wrap()` (or `wrapParam()`) on all args
  */
 
-function wrapArgs(fns) {
+function wrapArgs(fns, isParam) {
   const ret = [];
   for (const fn of fns) {
     if (typeof fn !== 'function') {
       ret.push(fn);
       continue;
     }
-    ret.push(wrap(fn));
+    ret.push(isParam ? wrapParam(fn) : wrap(fn));
   }
   return ret;
+}
+
+/**
+ * Given a function that returns a promise, converts it into something you
+ * can safely pass into `app.param()`.
+ */
+
+function wrapParam(fn) {
+  return async function wrappedParamMiddleware(req, res, next, id) {
+    next = _once(next);
+    try {
+      await fn(req, res, next, id);
+      res.headersSent ? null : next();
+    } catch(err) {
+      res.headersSent ? null : next(err);
+    }
+  };
+}
+
+/**
+ * Given an error handler that returns a promise, converts it into something you
+ * can safely pass into `app.use()`.
+ */
+
+function wrapError(fn) {
+  return async function wrappedErrorHandler(error, req, res, next) {
+    next = _once(next);
+    try {
+      await fn(error, req, res, next);
+      res.headersSent ? null : next();
+    } catch(err) {
+      res.headersSent ? null : next(err);
+    }
+  };
 }
 
 /**
@@ -99,15 +141,7 @@ function wrapArgs(fns) {
 function wrap(fn) {
   // Error handling middleware
   if (fn.length === 4) {
-    return async function wrappedErrorHandler(error, req, res, next) {
-      next = _once(next);
-      try {
-        await fn(error, req, res, next);
-        res.headersSent ? null : next();
-      } catch(err) {
-        res.headersSent ? null : next(err);
-      }
-    };
+    return wrapError(fn);
   }
 
   return async function wrappedMiddleware(req, res, next) {

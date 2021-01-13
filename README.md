@@ -25,8 +25,8 @@ to your Express app.
 ### It adds `useAsync()`, `getAsync()`, etc. to your Express app
 
 
-The `addAsync()` function adds `useAsync()`, `getAsync()`,
-`putAsync()`, `postAsync()`, and `headAsync()`.
+The `addAsync()` function adds `useAsync()`, `deleteAsync()`, `getAsync()`,
+`headAsync()`, `paramAsync()`, `patchAsync()`, `postAsync()`, and `putAsync()`.
 
 
 ```javascript
