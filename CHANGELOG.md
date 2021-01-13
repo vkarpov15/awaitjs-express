@@ -1,3 +1,11 @@
+0.6.3 / 2020-10-19
+==================
+ * fix: add missing export #18
+
+0.6.2 / 2020-10-19
+==================
+ * fix: add `wrap()` to TypeScript type definitions #18
+
 0.6.1 / 2020-05-31
 ==================
  * fix: add `Router` export to typescript definitions #16 [saltire](https://github.com/saltire)
