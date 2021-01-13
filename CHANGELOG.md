@@ -1,3 +1,7 @@
+0.7.0 / 2021-01-13
+==================
+ * feat: paramAsync() wrapped function #17 [saltire](https://github.com/saltire)
+
 0.6.3 / 2020-10-19
 ==================
  * fix: add missing export #18
