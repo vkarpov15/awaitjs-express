@@ -15,76 +15,22 @@ function addAsync(app) {
   app.routeAsync = function() {
     return addAsync(this.route.apply(this, arguments));
   };
-
-  app.useAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `useAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.use.apply(app, args);
-  };
-
-  app.deleteAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `deleteAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.delete.apply(app, args);
-  };
-
-  app.getAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `getAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.get.apply(app, args);
-  };
-
-  app.headAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `headAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.head.apply(app, args);
-  };
-
-  app.paramAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `paramAsync()` must be a function');
-    const args = wrapArgs(arguments, true);
-    return app.param.apply(app, args);
-  }
-
-  app.patchAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `patchAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.patch.apply(app, args);
-  };
-
-  app.postAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `postAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.post.apply(app, args);
-  };
-
-  app.putAsync = function() {
-    const fn = arguments[arguments.length - 1];
-    assert.ok(typeof fn === 'function',
-      'Last argument to `putAsync()` must be a function');
-    const args = wrapArgs(arguments);
-    return app.put.apply(app, args);
-  };
-
+  
+  ['use', 'delete', 'get', 'head', 'param', 'patch', 'post', 'put'].forEach(method => {
+    app[`${method}Async`] = function() {
+      const fn = arguments[arguments.length - 1];
+      assert.ok(typeof fn === 'function',
+        `Last argument to \`${method}Async()\` must be a function`);
+      const args = wrapArgs(arguments);
+      return app[method].apply(app, args);
+    };
+  });
+  
   return app;
 }
 
 /**
- * Call `wrap()` (or `wrapParam()`) on all args
+ * Call `wrap()` on all args
  */
 
 function wrapArgs(fns, isParam) {
@@ -94,65 +40,34 @@ function wrapArgs(fns, isParam) {
       ret.push(fn);
       continue;
     }
-    ret.push(isParam ? wrapParam(fn) : wrap(fn));
+    ret.push(wrap(fn, isParam));
   }
   return ret;
 }
 
 /**
  * Given a function that returns a promise, converts it into something you
- * can safely pass into `app.param()`.
+ * can safely pass into `app.use()`, `app.get()`, `app.param()`, etc.
  */
 
-function wrapParam(fn) {
-  return async function wrappedParamMiddleware(req, res, next, id) {
-    next = _once(next);
+function wrap(fn, isParam) {
+  const isErrorHandler = !isParam && fn.length == 4 ? 1 : 0;
+  async function wrapped() {
+    next = _once(arguments[2 + isErrorHandler]);
+    res = arguments[1 + isErrorHandler];
     try {
-      await fn(req, res, next, id);
-      res.headersSent ? null : next();
+      await fn.apply(null, arguments);
+      if (!res.headersSent) next();
     } catch(err) {
-      res.headersSent ? null : next(err);
+      if (!res.headersSent) next(err);
     }
   };
-}
-
-/**
- * Given an error handler that returns a promise, converts it into something you
- * can safely pass into `app.use()`.
- */
-
-function wrapError(fn) {
-  return async function wrappedErrorHandler(error, req, res, next) {
-    next = _once(next);
-    try {
-      await fn(error, req, res, next);
-      res.headersSent ? null : next();
-    } catch(err) {
-      res.headersSent ? null : next(err);
-    }
-  };
-}
-
-/**
- * Given a function that returns a promise, converts it into something you
- * can safely pass into `app.use()`, `app.get()`, etc.
- */
-
-function wrap(fn) {
-  // Error handling middleware
-  if (fn.length === 4) {
-    return wrapError(fn);
-  }
-
-  return async function wrappedMiddleware(req, res, next) {
-    next = _once(next);
-    try {
-      await fn(req, res, next);
-      res.headersSent ? null : next();
-    } catch(err) {
-      res.headersSent ? null : next(err);
-    }
-  };
+  
+  Object.defineProperty(wrapped, 'name', { // Define a name for stack traces
+    value: isErrorHandler ? 'wrappedErrorHandler' : isParam ? 'wrappedParamMiddleware' : 'wrappedMiddleware' 
+  });
+  
+  return wrapped;
 }
 
 function _once(fn) {
