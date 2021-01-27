@@ -21,7 +21,7 @@ function addAsync(app) {
       const fn = arguments[arguments.length - 1];
       assert.ok(typeof fn === 'function',
         `Last argument to \`${method}Async()\` must be a function`);
-      const args = wrapArgs(arguments);
+      const args = wrapArgs(arguments, method == 'param');
       return app[method].apply(app, args);
     };
   });
