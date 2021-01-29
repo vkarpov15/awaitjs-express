@@ -16,7 +16,9 @@ function addAsync(app) {
     return addAsync(this.route.apply(this, arguments));
   };
   
-  ['use', 'delete', 'get', 'head', 'param', 'patch', 'post', 'put'].forEach(method => {
+  let methods = ['use', 'delete', 'get', 'head', 'param', 'patch', 'post', 'put'];
+  for (let i = 0; i < methods.length; i++) {
+    const method = methods[i];
     app[`${method}Async`] = function() {
       const fn = arguments[arguments.length - 1];
       assert.ok(typeof fn === 'function',
@@ -24,7 +26,7 @@ function addAsync(app) {
       const args = wrapArgs(arguments, method == 'param');
       return app[method].apply(app, args);
     };
-  });
+  }
   
   return app;
 }
@@ -51,7 +53,7 @@ function wrapArgs(fns, isParam) {
  */
 
 function wrap(fn, isParam) {
-  const isErrorHandler = !isParam && fn.length == 4 ? 1 : 0;
+  const isErrorHandler = !isParam && fn.length == 4;
   async function wrapped() {
     next = _once(arguments[2 + isErrorHandler]);
     res = arguments[1 + isErrorHandler];
@@ -62,6 +64,10 @@ function wrap(fn, isParam) {
       if (!res.headersSent) next(err);
     }
   };
+  
+  Object.defineProperty(wrapped, 'length', { // Length has to be set for express to recognize error handlers as error handlers
+    value: isErrorHandler ? 4 : isParam ? 4 : 3
+  });
   
   Object.defineProperty(wrapped, 'name', { // Define a name for stack traces
     value: isErrorHandler ? 'wrappedErrorHandler' : isParam ? 'wrappedParamMiddleware' : 'wrappedMiddleware' 
