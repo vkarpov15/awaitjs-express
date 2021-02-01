@@ -24,5 +24,5 @@ export const decorateApp: (router: Express) => ExpressWithAsync
 declare function AsyncRouter(options?: RouterOptions): RouterWithAsync
 export { AsyncRouter as Router }
 
-declare function wrap(fn: Function): Function
+declare function wrap(fn: Function, isParam: boolean): Function
 export { wrap }
