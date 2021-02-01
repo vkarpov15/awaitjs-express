@@ -1,3 +1,7 @@
+0.7.1 / 2021-02-01
+==================
+ * refactor: DRY up code #21 [EvanSmith-git](https://github.com/EvanSmith-git)
+
 0.7.0 / 2021-01-13
 ==================
  * feat: paramAsync() wrapped function #17 [saltire](https://github.com/saltire)
