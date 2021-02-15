@@ -1,3 +1,7 @@
+0.7.2 / 2021-02-15
+==================
+ * fix: fix race condition #23 [EvanSmith-git](https://github.com/EvanSmith-git)
+
 0.7.1 / 2021-02-01
 ==================
  * refactor: DRY up code #21 [EvanSmith-git](https://github.com/EvanSmith-git)
