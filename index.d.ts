@@ -1,4 +1,25 @@
-import { Express, Router, IRouter, RouterOptions } from 'express'
+import { Express, Router, RouterOptions } from 'express'
+import type { Request, Response, ParamsDictionary, NextFunction, IRouter as _IRouter } from 'express-serve-static-core';
+import type { ParsedQs } from 'qs';
+
+// copied from express-serve-static-core so we can change the function signature
+export interface RequestHandler<
+    P = ParamsDictionary,
+    ResBody = any,
+    ReqBody = any,
+    ReqQuery = ParsedQs,
+    Locals extends Record<string, any> = Record<string, any>
+> {
+    // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2)
+    (
+        req: Request<P, ResBody, ReqBody, ReqQuery, Locals>,
+        res: Response<ResBody, Locals>,
+        next: NextFunction,
+    ): Promise<void>;
+}
+
+interface IRouter extends RequestHandler, _IRouter {
+}
 
 export interface IRouterWithAsync {
   useAsync: IRouter['use']

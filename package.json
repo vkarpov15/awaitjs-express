@@ -15,6 +15,7 @@
     "url": "git://github.com/vkarpov15/awaitjs-express.git"
   },
   "devDependencies": {
+    "@types/express-serve-static-core": "^4.17.19",
     "acquit": "1.0.0",
     "acquit-ignore": "0.1.0",
     "acquit-markdown": "0.1.0",
