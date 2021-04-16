@@ -115,6 +115,56 @@ describe('addAsync', function() {
 
     await server.close();
   });
+
+  it('should be consistent with normal express routes', async function() {
+    const app = addAsync(express());
+
+    app.get('/normal', function (req,res,next) {
+      req.testMessage = '1';
+      next()
+    }, function (req,res,next) {
+      req.testMessage += '2';      
+      next()
+    }, function (req,res,next) {
+      setTimeout(() => {
+        req.testMessage += '3';
+        next();
+      }, 500);
+    }, async function routeHandler(req, res) {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      res.send(req.testMessage);
+    });
+
+    app.getAsync('/async', function (req,res,next) {
+      req.testMessage = '1';
+      // 1. The request should be left hanging here accordingly to the express docs,
+      // since next() is not called, nevertheless the next middlware gets executed
+
+      // next()
+    }, function (req,res,next) {
+      req.testMessage += '2';      
+      next()
+    }, function (req,res,next) {
+      // 2. The next middlware shouldn't be executed, until next() is not called
+      // nevertheless the next middlware gets executed without waiting
+      setTimeout(() => {
+        req.testMessage += '3';
+        next();
+      }, 500);
+    }, async function routeHandler(req, res) {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      res.send(req.testMessage);
+    });
+
+    const server = await app.listen(3000);
+
+    const resNormal = await superagent.get('http://localhost:3000/normal');
+    const resAsync = await superagent.get('http://localhost:3000/async');
+    await server.close();
+
+    assert.equal(resNormal.text, '123');    
+    assert.equal(resAsync.text, '123');    
+  });
 });
 
 describe('wrap', function() {
