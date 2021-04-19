@@ -59,8 +59,11 @@ function wrap(fn, isParam) {
     // Ensure next function is only ran once
     arguments[2 + isErrorHandler] = _once(arguments[2 + isErrorHandler]);
     try {
-      await fn.apply(null, arguments);
-      arguments[1 + isErrorHandler].headersSent ? null : arguments[2 + isErrorHandler]();
+      const promise = fn.apply(null, arguments);
+      if (promise && typeof promise.then === 'function' && promise[Symbol.toStringTag] === 'Promise') {
+        await promise;
+        arguments[1 + isErrorHandler].headersSent ? null : arguments[2 + isErrorHandler]();
+      }
     } catch(err) {
       arguments[1 + isErrorHandler].headersSent ? null : arguments[2 + isErrorHandler](err);
     }

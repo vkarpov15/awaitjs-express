@@ -80,6 +80,7 @@ describe('addAsync', function() {
 
     app.getAsync('/', function (req,res,next) {
       req.helloMessage = 'Hello, World!';
+      next()
     }, async function routeHandler(req, res) {
       await new Promise(resolve => setTimeout(resolve, 10));
       res.send(req.helloMessage);
@@ -129,7 +130,7 @@ describe('addAsync', function() {
       setTimeout(() => {
         req.testMessage += '3';
         next();
-      }, 500);
+      }, 10);
     }, async function routeHandler(req, res) {
       await new Promise(resolve => setTimeout(resolve, 10));
       res.send(req.testMessage);
@@ -137,20 +138,17 @@ describe('addAsync', function() {
 
     app.getAsync('/async', function (req,res,next) {
       req.testMessage = '1';
-      // 1. The request should be left hanging here accordingly to the express docs,
-      // since next() is not called, nevertheless the next middlware gets executed
-
-      // next()
-    }, function (req,res,next) {
-      req.testMessage += '2';      
       next()
     }, function (req,res,next) {
-      // 2. The next middlware shouldn't be executed, until next() is not called
-      // nevertheless the next middlware gets executed without waiting
+      return new Promise((resolve)=> {
+        req.testMessage += '2';      
+        resolve();
+      })    
+    }, function (req,res,next) {
       setTimeout(() => {
         req.testMessage += '3';
         next();
-      }, 500);
+      }, 10);
     }, async function routeHandler(req, res) {
       await new Promise(resolve => setTimeout(resolve, 10));
       res.send(req.testMessage);
