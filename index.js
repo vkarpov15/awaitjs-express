@@ -60,7 +60,7 @@ function wrap(fn, isParam) {
     arguments[2 + isErrorHandler] = _once(arguments[2 + isErrorHandler]);
     try {
       const promise = fn.apply(null, arguments);
-      if (promise && typeof promise.then === 'function' && promise[Symbol.toStringTag] === 'Promise') {
+      if (promise && typeof promise.then === 'function') {
         await promise;
         arguments[1 + isErrorHandler].headersSent ? null : arguments[2 + isErrorHandler]();
       }
