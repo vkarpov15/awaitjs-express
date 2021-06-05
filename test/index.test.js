@@ -80,6 +80,7 @@ describe('addAsync', function() {
 
     app.getAsync('/', function (req,res,next) {
       req.helloMessage = 'Hello, World!';
+      next()
     }, async function routeHandler(req, res) {
       await new Promise(resolve => setTimeout(resolve, 10));
       res.send(req.helloMessage);
@@ -114,6 +115,53 @@ describe('addAsync', function() {
     assert.equal(res.text, 'Oops!');
 
     await server.close();
+  });
+
+  it('should be consistent with normal express routes', async function() {
+    const app = addAsync(express());
+
+    app.get('/normal', function (req,res,next) {
+      req.testMessage = '1';
+      next()
+    }, function (req,res,next) {
+      req.testMessage += '2';      
+      next()
+    }, function (req,res,next) {
+      setTimeout(() => {
+        req.testMessage += '3';
+        next();
+      }, 10);
+    }, async function routeHandler(req, res) {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      res.send(req.testMessage);
+    });
+
+    app.getAsync('/async', function (req,res,next) {
+      req.testMessage = '1';
+      next()
+    }, function (req,res,next) {
+      return new Promise((resolve)=> {
+        req.testMessage += '2';      
+        resolve();
+      })    
+    }, function (req,res,next) {
+      setTimeout(() => {
+        req.testMessage += '3';
+        next();
+      }, 10);
+    }, async function routeHandler(req, res) {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      res.send(req.testMessage);
+    });
+
+    const server = await app.listen(3000);
+
+    const resNormal = await superagent.get('http://localhost:3000/normal');
+    const resAsync = await superagent.get('http://localhost:3000/async');
+    await server.close();
+
+    assert.equal(resNormal.text, '123');    
+    assert.equal(resAsync.text, '123');    
   });
 });
 
