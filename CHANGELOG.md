@@ -1,3 +1,7 @@
+0.8.0 / 2021-07-13
+==================
+ * fix: avoid automatically calling `next()` if middleware doesn't return a promise #27 [letalumil](https://github.com/letalumil)
+
 0.7.2 / 2021-02-15
 ==================
  * fix: fix race condition #23 [EvanSmith-git](https://github.com/EvanSmith-git)
