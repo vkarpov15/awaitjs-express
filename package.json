@@ -23,6 +23,7 @@
     "superagent": "3.x"
   },
   "peerDependencies": {
+    "@types/express": "4.x",
     "express": "4.x"
   },
   "engines": {
