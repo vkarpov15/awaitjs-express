@@ -1,3 +1,7 @@
+0.9.0 / 2021-10-22
+==================
+ * fix(index.d.ts): add workaround for TS linters that enforce no-misused-promises #30 #28
+
 0.8.0 / 2021-07-13
 ==================
  * fix: avoid automatically calling `next()` if middleware doesn't return a promise #27 [letalumil](https://github.com/letalumil)
